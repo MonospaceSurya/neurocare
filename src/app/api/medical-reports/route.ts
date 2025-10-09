@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { getDb } from '@/lib/db'
 
 export async function GET(request: NextRequest) {
   try {
@@ -13,7 +13,8 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    const reports = await db.medicalRecord.findMany({
+  const db = getDb()
+  const reports = await db.medicalRecord.findMany({
       where: {
         patientId: patientId
       },
@@ -34,6 +35,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const db = getDb()
     const formData = await request.formData()
     const patientId = formData.get('patientId') as string
     const file = formData.get('file') as File
@@ -86,6 +88,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Delete the report from database
+    const db = getDb()
     await db.medicalRecord.delete({
       where: {
         id: reportId

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { getDb } from '@/lib/db'
 
 export async function GET(request: NextRequest) {
   try {
@@ -14,7 +14,8 @@ export async function GET(request: NextRequest) {
     }
 
     // Get user information
-    const user = await db.user.findUnique({
+  const db = getDb()
+  const user = await db.user.findUnique({
       where: { id: patientId },
       select: {
         id: true,
@@ -70,8 +71,9 @@ export async function PUT(request: NextRequest) {
       )
     }
 
-    // Update user information
-    await db.user.update({
+  const db = getDb()
+  // Update user information
+  await db.user.update({
       where: { id: patientId },
       data: {
         name: profileData.fullName,
@@ -81,7 +83,7 @@ export async function PUT(request: NextRequest) {
     })
 
     // Upsert patient profile
-    const profile = await db.patientProfile.upsert({
+  const profile = await db.patientProfile.upsert({
       where: { patientId },
       update: {
         dateOfBirth: profileData.dateOfBirth ? new Date(profileData.dateOfBirth) : undefined,

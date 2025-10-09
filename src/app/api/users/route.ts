@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { getDb } from '@/lib/db'
 
 export async function GET() {
   try {
-    const users = await db.user.findMany({
+  const db = getDb()
+  const users = await db.user.findMany({
       select: {
         id: true,
         email: true,
@@ -35,7 +36,8 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
+  const db = getDb()
+  const body = await request.json()
     const { email, name, role, phone } = body
 
     if (!email || !role) {

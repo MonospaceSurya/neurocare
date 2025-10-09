@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { getDb } from '@/lib/db'
 
 export async function GET() {
   try {
-    const appointments = await db.appointment.findMany({
+  const db = getDb()
+  const appointments = await db.appointment.findMany({
       include: {
         patient: {
           select: {
@@ -37,7 +38,8 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
+  const db = getDb()
+  const body = await request.json()
     const { patientId, doctorId, date, time, reason } = body
 
     if (!patientId || !date || !time || !reason) {

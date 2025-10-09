@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { getDb } from '@/lib/db'
 
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const user = await db.user.findUnique({
+  const db = getDb()
+  const user = await db.user.findUnique({
       where: { id: params.id },
       select: {
         id: true,
@@ -58,6 +59,7 @@ export async function PUT(
     }
 
     // Check if email is being changed and if it already exists
+    const db = getDb()
     if (email) {
       const existingUser = await db.user.findFirst({
         where: {
@@ -74,7 +76,7 @@ export async function PUT(
       }
     }
 
-    const user = await db.user.update({
+  const user = await db.user.update({
       where: { id: params.id },
       data: {
         email,
@@ -108,7 +110,8 @@ export async function DELETE(
 ) {
   try {
     // Check if user exists
-    const user = await db.user.findUnique({
+  const db = getDb()
+  const user = await db.user.findUnique({
       where: { id: params.id },
       include: {
         _count: {
@@ -137,7 +140,7 @@ export async function DELETE(
       )
     }
 
-    await db.user.delete({
+  await db.user.delete({
       where: { id: params.id }
     })
 

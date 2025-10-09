@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { getDb } from '@/lib/db'
 
 export async function GET(
   request: NextRequest,
@@ -8,6 +8,7 @@ export async function GET(
   try {
     const { patientId } = await params
 
+    const db = getDb()
     const appointments = await db.appointment.findMany({
       where: {
         patientId: patientId
